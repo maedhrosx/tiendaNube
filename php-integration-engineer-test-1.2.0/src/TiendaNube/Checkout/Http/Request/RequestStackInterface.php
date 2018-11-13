@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace TiendaNube\Checkout\Http\Request;
 
 use Psr\Http\Message\ServerRequestInterface;
-use GuzzleHttp\Client;
 
 /**
  * Interface RequestStackInterface
