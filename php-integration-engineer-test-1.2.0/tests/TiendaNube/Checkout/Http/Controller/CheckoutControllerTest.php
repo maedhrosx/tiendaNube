@@ -14,6 +14,8 @@ use Psr\Http\Message\StreamInterface;
 use TiendaNube\Checkout\Http\Request\RequestStackInterface;
 use TiendaNube\Checkout\Http\Response\ResponseBuilderInterface;
 use TiendaNube\Checkout\Service\Shipping\AddressService;
+use TiendaNube\Checkout\Service\Shipping\AddressServiceInterface;
+use TiendaNube\Checkout\Service\Store\StoreServiceInterface;
 
 class CheckoutControllerTest extends TestCase
 {
@@ -31,12 +33,23 @@ class CheckoutControllerTest extends TestCase
             'state' => 'BA',
         ];
 
+        $store = [
+            'id' => '1',
+            'name' => 'Store de Brazil',
+            'email' => 'prueba@prueba.com',
+            'betaTester' => true,
+        ];
+        
         // mocking the address service
-        $addressService = $this->createMock(AddressService::class);
+        $addressService = $this->createMock(AddressServiceInterface::class);
         $addressService->method('getAddressByZip')->willReturn($address);
 
+        // mocking the store service
+        $storeServiceInterface = $this->createMock(StoreServiceInterface::class);
+        $storeServiceInterface->method('getCurrentStore')->willReturn($store);
+        
         // test
-        $result = $controller->getAddressAction('40010000',$addressService);
+        $result = $controller->getAddressAction('40010000',$addressService, $storeServiceInterface);
 
         // asserts
         $this->assertEquals(json_encode($address),$result->getBody()->getContents());
@@ -49,11 +62,22 @@ class CheckoutControllerTest extends TestCase
         $controller = $this->getControllerInstance();
 
         // mocking address service
-        $addressService = $this->createMock(AddressService::class);
+        $addressService = $this->createMock(AddressServiceInterface::class);
         $addressService->method('getAddressByZip')->willReturn(null);
 
+        $store = [
+            'id' => '1',
+            'name' => 'Store de Brazil',
+            'email' => 'prueba@prueba.com',
+            'betaTester' => true,
+        ];
+        
+        // mocking the store service
+        $storeServiceInterface = $this->createMock(StoreServiceInterface::class);
+        $storeServiceInterface->method('getCurrentStore')->willReturn($store);
+        
         // test
-        $result = $controller->getAddressAction('400100001',$addressService);
+        $result = $controller->getAddressAction('400100001',$addressService, $storeServiceInterface);
 
         // asserts
         $this->assertEquals(404,$result->getStatusCode());

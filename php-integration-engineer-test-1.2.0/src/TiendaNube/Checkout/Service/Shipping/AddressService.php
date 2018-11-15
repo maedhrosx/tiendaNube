@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace TiendaNube\Checkout\Service\Shipping;
 
 use Psr\Log\LoggerInterface;
+use TiendaNube\Checkout\Service\Shipping\AddressServiceInterface;
 
 /**
  * Class AddressService
  *
  * @package TiendaNube\Checkout\Service\Shipping
  */
-class AddressService
+class AddressService implements AddressServiceInterface
 {
     /**
      * The database connection link
